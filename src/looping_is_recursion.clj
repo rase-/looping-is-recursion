@@ -1,27 +1,27 @@
 (ns looping-is-recursion)
 
 (defn power [base exp]
-  (let [helper (fn [base exp acc] (if (== 1 exp)
-                                    acc
-                                    (recur base (dec exp) (* acc base))))]
-    (if (== 0 exp)
-       1
-       (helper base exp base))))
+  (if (zero? exp) 
+    1
+    (* base (power base (dec exp)))))
 
 (defn last-element [a-seq]
-  (let [helper (fn [i a-seq] (if (== i (count a-seq))
-                               (get a-seq (dec i))
-                               (recur (inc i) a-seq)))]
-    (helper 0 a-seq)))
+  (let [fst (first a-seq)
+        rst (rest a-seq)]
+    (if (empty? rst)
+      fst
+      (recur rst))))
 
 (defn seq= [seq1 seq2]
-  (if (not (== (count seq1) (count seq2)))
-    false
-    (loop [i 0]
-      (cond
-       (== i (count seq1)) true
-       (not (= (first seq1) (first seq2))) false
-       :else (recur (inc i))))))
+  (let [x (first seq1)
+        y (first seq2)
+        rst1 (rest seq1)
+        rst2 (rest seq2)]
+    (cond
+      (and (empty? rst1) (empty? rst2)) true
+      (or (empty? rst1) (empty? rst2)) false
+      (== x y) (recur rst1 rst2)
+      :else false)))
 
 (defn find-first-index [pred a-seq]
   (loop [i 0]
